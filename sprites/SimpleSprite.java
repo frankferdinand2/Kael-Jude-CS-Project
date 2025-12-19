@@ -1,126 +1,147 @@
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
 public class SimpleSprite implements DisplayableSprite {
 
-	private static Image image;	
-	private double centerX = 0;
-	private double centerY = 0;
-	private double width = 50;
-	private double height = 50;
-	private boolean dispose = false;	
+    private static final String IMAGE_PATH = "res/simple-sprite.png";
+    private static final double DEFAULT_WIDTH = 40.0;
+    private static final double DEFAULT_HEIGHT = 40.0;
+    private static final double GROUND_Y = 200.0;
+    private static final double GRAVITY = 250.0;
+    private static final double BOUNCE_DAMPENING = 0.8;
+    private static final double ROOF_Y = -250;
+    private static final double MIN_VELOCITY_THRESHOLD = 10.0;
+    private static final double JET_POWER = -5;
+    
+    double JET_BATTERY = 10000;
+    
+    private static Image image;
 
-	private final double VELOCITY = 200;
+    private double centerX;
+    private double centerY;
+    private double width;
+    private double height;
+    private boolean dispose;
+    private double velocityX; // if we make cam move w/ character
+    private double velocityY;
 
-	public SimpleSprite(double centerX, double centerY, double height, double width) {
-		this(centerX, centerY);
-		
-		this.height = height;
-		this.width = width;
-	}
+    public SimpleSprite(double centerX, double centerY) {
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.width = DEFAULT_WIDTH;
+        this.height = DEFAULT_HEIGHT;
+        loadImage();
+    }
 
-	
-	public SimpleSprite(double centerX, double centerY) {
+    public SimpleSprite(double centerX, double centerY, double velocityX) {
+        this(centerX, centerY);
+        this.velocityX = velocityX;
+    }
 
-		this.centerX = centerX;
-		this.centerY = centerY;
-		
-		if (image == null) {
-			try {
-				image = ImageIO.read(new File("res/simple-sprite.png"));
-			}
-			catch (IOException e) {
-				System.out.println(e.toString());
-			}		
-		}		
-	}
+    private void loadImage() {
+        if (image == null) {
+            try {
+                image = ImageIO.read(new File(IMAGE_PATH));
+            } catch (IOException e) {
+                System.err.println("Error loading image: " + e);
+            }
+        }
+    }
 
-	public Image getImage() {
-		return image;
-	}
-	
-	//DISPLAYABLE
-	
-	public boolean getVisible() {
-		return true;
-	}
-	
-	public double getMinX() {
-		return centerX - (width / 2);
-	}
+    public Image getImage() {
+        return image;
+    }
 
-	public double getMaxX() {
-		return centerX + (width / 2);
-	}
+    public boolean getVisible() {
+        return true;
+    }
 
-	public double getMinY() {
-		return centerY - (height / 2);
-	}
+    public double getMinX() {
+        return centerX - (width / 2);
+    }
 
-	public double getMaxY() {
-		return centerY + (height / 2);
-	}
+    public double getMaxX() {
+        return centerX + (width / 2);
+    }
 
-	public double getHeight() {
-		return height;
-	}
+    public double getMinY() {
+        return centerY - (height / 2);
+    }
 
-	public double getWidth() {
-		return width;
-	}
+    public double getMaxY() {
+        return centerY + (height / 2);
+    }
 
-	public double getCenterX() {
-		return centerX;
-	};
+    public double getHeight() {
+        return height;
+    }
 
-	public double getCenterY() {
-		return centerY;
-	};
-	
-	
-	public boolean getDispose() {
-		return dispose;
-	}
+    public double getWidth() {
+        return width;
+    }
 
-	public void update(Universe universe, long actual_delta_time) {
-		
-		double velocityX = 0;
-		double velocityY = 0;
-		
-		KeyboardInput keyboard = KeyboardInput.getKeyboard();
+    public double getCenterX() {
+        return centerX;
+    }
 
-		//LEFT	
-		if (keyboard.keyDown(37)) {
-			velocityX = -VELOCITY;
-		}
-		//UP
-		if (keyboard.keyDown(38)) {
-			velocityY = -VELOCITY;			
-		}
-		// RIGHT
-		if (keyboard.keyDown(39)) {
-			velocityX += VELOCITY;
-		}
-		// DOWN
-		if (keyboard.keyDown(40)) {
-			velocityY += VELOCITY;			
-		}
+    public double getCenterY() {
+        return centerY;
+    }
 
-		double deltaX = actual_delta_time * 0.001 * velocityX;
-        this.centerX += deltaX;
-		
-		double deltaY = actual_delta_time * 0.001 * velocityY;
-    	this.centerY += deltaY;
+    public boolean getDispose() {
+        return dispose;
+    }
 
-	}
+    public void setCenterX(double centerX) {
+        this.centerX = centerX;
+    }
 
+    public void setCenterY(double centerY) {
+        this.centerY = centerY;
+    }
 
-	@Override
-	public void setDispose(boolean dispose) {
-		this.dispose = true;
-	}
+    public void setVelocityX(double velocityX) {
+        this.velocityX = velocityX;
+    }
 
+    public void setVelocityY(double velocityY) {
+        this.velocityY = velocityY;
+    }
+
+    @Override
+    public void setDispose(boolean dispose) {
+        this.dispose = dispose;
+    }
+
+    public void update(Universe universe, long actualDeltaTime) {
+        double deltaTime = actualDeltaTime * 0.001;
+
+        velocityY += GRAVITY * deltaTime; // apply gravity
+        centerY += velocityY * deltaTime;
+
+        KeyboardInput keyboard = KeyboardInput.getKeyboard();
+
+        if (keyboard.keyDown(38) && JET_BATTERY > 0) { 
+            velocityY += JET_POWER;
+            JET_BATTERY -= actualDeltaTime; // jet pack cooldown
+        }
+        
+        if (centerY >= GROUND_Y) { // ground bouncing
+            centerY = GROUND_Y;
+            velocityY = -velocityY * BOUNCE_DAMPENING;
+            if (Math.abs(velocityY) < MIN_VELOCITY_THRESHOLD) {
+                velocityY = 0;
+            }
+        }
+        
+        if (centerY <= ROOF_Y) { // roof bouncing
+            centerY = ROOF_Y;
+            velocityY = -velocityY * BOUNCE_DAMPENING;
+            if (Math.abs(velocityY) < MIN_VELOCITY_THRESHOLD) {
+                velocityY = 0;
+            }
+        }
+    }
 }
