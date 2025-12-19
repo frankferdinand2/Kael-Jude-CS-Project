@@ -23,8 +23,8 @@ public class AnimationFrame extends JFrame {
 	final public static int FRAMES_PER_SECOND = 60;
 	protected long REFRESH_TIME = 1000 / FRAMES_PER_SECOND;	//MILLISECONDS
 
-	protected static int SCREEN_HEIGHT = 540;
-	protected static int SCREEN_WIDTH = 960;
+	protected static int SCREEN_HEIGHT = 720;
+	protected static int SCREEN_WIDTH = 1280;
 
 	//These variables control where the screen is centered in relation to the logical center of universe.
 	//Generally it makes sense to have these start at half screen width and height, so that the logical

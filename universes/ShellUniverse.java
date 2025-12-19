@@ -11,7 +11,7 @@ public class ShellUniverse implements Universe {
     public ShellUniverse () {
         this.setXCenter(0);
         this.setYCenter(0);
-        player1 = new SimpleSprite(0,-200);
+        player1 = new ObSprite(0, 0);
         sprites.add(player1);
     }
 
