@@ -145,5 +145,19 @@ public class ObSprite implements DisplayableSprite {
 				velocityY = 0;
 			}
 		}
+		for (DisplayableSprite sprite : universe.getSprites()) {
+            if (checkCollision(sprite) && sprite instanceof SpikeSprite) { // add any kill sprites 
+            	dispose = true;
+            }
+		} 
 	}
+	
+    // Collision Detection for Ob
+    private boolean checkCollision(DisplayableSprite sprite) {
+        return !(sprite.getMaxX() < getMinX() ||
+                 sprite.getMinX() > getMaxX() ||
+                 sprite.getMaxY() < getMinY() ||
+                 sprite.getMinY() > getMaxY());
+    }
+
 }
