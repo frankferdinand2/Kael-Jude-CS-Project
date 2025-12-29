@@ -149,15 +149,25 @@ public class ObSprite implements DisplayableSprite {
             if (checkCollision(sprite) && sprite instanceof SpikeSprite) { // add any kill sprites 
             	dispose = true;
             }
+            if (sprite instanceof FloorSprite && checkCollision(sprite)) {
+
+                centerY = sprite.getMinY() - height / 2;
+
+                if (velocityY > 0) {
+                    velocityY = -velocityY * BOUNCE_DAMPENING;
+                }
+            }
+        
 		} 
 	}
 	
-    // Collision Detection for Ob
+    // Collision Detection (kill bricks)
     private boolean checkCollision(DisplayableSprite sprite) {
         return !(sprite.getMaxX() < getMinX() ||
                  sprite.getMinX() > getMaxX() ||
                  sprite.getMaxY() < getMinY() ||
                  sprite.getMinY() > getMaxY());
     }
+    
 
 }

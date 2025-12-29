@@ -3,6 +3,7 @@ public class ShellUniverse implements Universe {
   private boolean complete = false;	
   private DisplayableSprite ob = null;
   private DisplayableSprite spike = null;
+  private DisplayableSprite floor = null;
   private ArrayList<DisplayableSprite> sprites = new ArrayList<>();
   private ArrayList<Background> backgrounds = new ArrayList<>();
   private ArrayList<DisplayableSprite> disposalList = new ArrayList<>();
@@ -11,8 +12,11 @@ public class ShellUniverse implements Universe {
       this.setYCenter(0);
       ob = new ObSprite(0, 0);
       spike = new SpikeSprite(0,-250);
+      floor = new FloorSprite(0,300);
       sprites.add(ob);
       sprites.add(spike);
+      sprites.add(floor);
+      
   }
   public double getScale() {
   	return 1;
