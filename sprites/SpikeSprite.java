@@ -8,7 +8,7 @@ public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess 
 	private static final String IMAGE_PATH = "res/spike.png";
 	private static final double DEFAULT_WIDTH = 100.0;
 	private static final double DEFAULT_HEIGHT = 100.0;
-
+	private static final double OB_SPEED = 300;
 
 	double JET_BATTERY = 67676767676767676767676767676767.0;
 
@@ -19,6 +19,7 @@ public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess 
 	private double width;
 	private double height;
 	private boolean dispose;
+
 
 	public SpikeSprite(double centerX, double centerY) {
 		this.centerX = centerX;
@@ -99,7 +100,16 @@ public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess 
 	
 	public void update(Universe universe, long actualDeltaTime) {
 
+		double deltaTime = actualDeltaTime * 0.001;
+		KeyboardInput keyboard = KeyboardInput.getKeyboard();
 
+
+       if (keyboard.keyDown(39)) { // ob moves right objects move left
+    	   centerX -= OB_SPEED * deltaTime;
+        }
+       if (keyboard.keyDown(37)) { // and vice versa
+    	   centerX += OB_SPEED * deltaTime;
+        }
 	}
 	
 	

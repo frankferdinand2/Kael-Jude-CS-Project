@@ -1,16 +1,15 @@
+
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-public class FloorSprite implements DisplayableSprite { // logic 4 kael to mess w/
+public class StatusRemoverSprite implements DisplayableSprite {
   
-	private static final String IMAGE_PATH = "res/download.jpg";
-	private static final double DEFAULT_WIDTH = 100.0;
-	private static final double DEFAULT_HEIGHT = 100.0;
+	private static final String IMAGE_PATH = "res/Cow.jpg";
+	private static final double DEFAULT_WIDTH = 200.0;
+	private static final double DEFAULT_HEIGHT = 200.0;
 	private static final double OB_SPEED = 300;
-
-	double JET_BATTERY = 67676767676767676767676767676767.0;
 
 	private static Image image;
 
@@ -20,7 +19,8 @@ public class FloorSprite implements DisplayableSprite { // logic 4 kael to mess 
 	private double height;
 	private boolean dispose;
 
-	public FloorSprite(double centerX, double centerY) {
+
+	public StatusRemoverSprite(double centerX, double centerY) {
 		this.centerX = centerX;
 		this.centerY = centerY;
 		this.width = DEFAULT_WIDTH;
@@ -98,16 +98,16 @@ public class FloorSprite implements DisplayableSprite { // logic 4 kael to mess 
 	}
 	
 	public void update(Universe universe, long actualDeltaTime) {
-
 		double deltaTime = actualDeltaTime * 0.001;
+		
 		KeyboardInput keyboard = KeyboardInput.getKeyboard();
 
 
-       if (keyboard.keyDown(39)) { // ob moves right objects move left
-    	   centerX -= OB_SPEED * deltaTime;
-        }
-       if (keyboard.keyDown(37)) { // and vice versa
-    	   centerX += OB_SPEED * deltaTime;
-        }
-	}
+	       if (keyboard.keyDown(39)) { // ob moves right objects move left
+	    	   centerX -= OB_SPEED * deltaTime;
+	        }
+	       if (keyboard.keyDown(37)) { // and vice versa
+	    	   centerX += OB_SPEED * deltaTime;
+	       }
+	}		
 }
