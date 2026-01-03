@@ -1,16 +1,14 @@
 import java.awt.Image;
+
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+
 public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess w/
   
-	private static final String IMAGE_PATH = "res/spike.png";
-	private static final double DEFAULT_WIDTH = 100.0;
-	private static final double DEFAULT_HEIGHT = 100.0;
-	private static final double OB_SPEED = 300;
-
-	double JET_BATTERY = 67676767676767676767676767676767.0;
+	private static final String IMAGE_PATH = "res/red.jpg";
+	private static final double OB_SPEED = 600;
 
 	private static Image image;
 
@@ -21,11 +19,11 @@ public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess 
 	private boolean dispose;
 
 
-	public SpikeSprite(double centerX, double centerY) {
+	public SpikeSprite(double centerX, double centerY, double width, double height) {
 		this.centerX = centerX;
 		this.centerY = centerY;
-		this.width = DEFAULT_WIDTH;
-		this.height = DEFAULT_HEIGHT;
+		this.width = width;
+		this.height = height;
 		loadImage();
 	}
 
@@ -92,25 +90,32 @@ public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess 
 		this.centerY = centerY;
 	}
 
-
 	@Override
 	public void setDispose(boolean dispose) {
 		this.dispose = dispose;
 	}
 	
 	public void update(Universe universe, long actualDeltaTime) {
-
 		double deltaTime = actualDeltaTime * 0.001;
-		KeyboardInput keyboard = KeyboardInput.getKeyboard();
+		
+	    boolean flappyModeActive = false;
+	    
+	    for (DisplayableSprite sprite : universe.getSprites()) {
+	        if (sprite instanceof ObSprite) {
+	            flappyModeActive = ((ObSprite) sprite).getFlappyMode();
+	            break;
+	        }
+	    }
+		
+	    KeyboardInput keyboard = KeyboardInput.getKeyboard();
 
 
-       if (keyboard.keyDown(39)) { // ob moves right objects move left
+       if (keyboard.keyDown(39) || flappyModeActive) { // ob moves right objects move left
     	   centerX -= OB_SPEED * deltaTime;
-        }
-       if (keyboard.keyDown(37)) { // and vice versa
+       }
+       
+       if (keyboard.keyDown(37) && !flappyModeActive) { // and vice versa
     	   centerX += OB_SPEED * deltaTime;
-        }
-	}
-	
-	
+       }
+	}		
 }

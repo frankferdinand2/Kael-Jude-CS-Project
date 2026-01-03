@@ -6,7 +6,7 @@ import javax.imageio.ImageIO;
 
 public class LevelEndSprite implements DisplayableSprite {
 	private static final String IMAGE_PATH = "res/fatty.png";
-	private static final double OB_SPEED = 300;
+	private static final double OB_SPEED = 600;
 
 	private static Image image;
 
@@ -23,8 +23,6 @@ public class LevelEndSprite implements DisplayableSprite {
 		this.height = height;
 		loadImage();
 	}
-
-
 
 	private void loadImage() {
 		if (image == null) {
@@ -94,20 +92,27 @@ public class LevelEndSprite implements DisplayableSprite {
 	}
 	
 	public void update(Universe universe, long actualDeltaTime) {
-
 		double deltaTime = actualDeltaTime * 0.001;
-		KeyboardInput keyboard = KeyboardInput.getKeyboard();
+		
+	    boolean flappyModeActive = false;
+	    
+	    for (DisplayableSprite sprite : universe.getSprites()) {
+	        if (sprite instanceof ObSprite) {
+	            flappyModeActive = ((ObSprite) sprite).getFlappyMode();
+	            break;
+	        }
+	    }
+		
+	    KeyboardInput keyboard = KeyboardInput.getKeyboard();
 
 
-	       if (keyboard.keyDown(39)) { // ob moves right objects move left
-	    	   centerX -= OB_SPEED * deltaTime;
-	        }
-	       if (keyboard.keyDown(37)) { // and vice versa
-	    	   centerX += OB_SPEED * deltaTime;
-	        }
-	}
-	
-	
-	
+       if (keyboard.keyDown(39) || flappyModeActive) { // ob moves right objects move left
+    	   centerX -= OB_SPEED * deltaTime;
+       }
+       
+       if (keyboard.keyDown(37) && !flappyModeActive) { // and vice versa
+    	   centerX += OB_SPEED * deltaTime;
+       }
+	}		
 }
 

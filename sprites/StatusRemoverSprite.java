@@ -9,7 +9,7 @@ public class StatusRemoverSprite implements DisplayableSprite {
 	private static final String IMAGE_PATH = "res/Cow.jpg";
 	private static final double DEFAULT_WIDTH = 200.0;
 	private static final double DEFAULT_HEIGHT = 200.0;
-	private static final double OB_SPEED = 300;
+	private static final double OB_SPEED = 600;
 
 	private static Image image;
 
@@ -100,14 +100,25 @@ public class StatusRemoverSprite implements DisplayableSprite {
 	public void update(Universe universe, long actualDeltaTime) {
 		double deltaTime = actualDeltaTime * 0.001;
 		
-		KeyboardInput keyboard = KeyboardInput.getKeyboard();
-
-
-	       if (keyboard.keyDown(39)) { // ob moves right objects move left
-	    	   centerX -= OB_SPEED * deltaTime;
+	    boolean flappyModeActive = false;
+	    
+	    for (DisplayableSprite sprite : universe.getSprites()) {
+	        if (sprite instanceof ObSprite) {
+	            flappyModeActive = ((ObSprite) sprite).getFlappyMode();
+	            break;
 	        }
-	       if (keyboard.keyDown(37)) { // and vice versa
-	    	   centerX += OB_SPEED * deltaTime;
-	       }
+	    }
+		
+	    KeyboardInput keyboard = KeyboardInput.getKeyboard();
+
+
+       if (keyboard.keyDown(39) || flappyModeActive) { // ob moves right objects move left
+    	   centerX -= OB_SPEED * deltaTime;
+       }
+       
+       if (keyboard.keyDown(37) && !flappyModeActive) { // and vice versa
+    	   centerX += OB_SPEED * deltaTime;
+       }
 	}		
+		
 }

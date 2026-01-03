@@ -1,13 +1,12 @@
+
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-public class ReverseGravityPortalSprite implements DisplayableSprite {
+public class FlappyBirdPortalSprite implements DisplayableSprite {
   
-	private static final String IMAGE_PATH = "res/chicken.jpg";
-	private static final double DEFAULT_WIDTH = 200.0;
-	private static final double DEFAULT_HEIGHT = 200.0;
+	private static final String IMAGE_PATH = "res/donkey.jpg";
 	private static final double OB_SPEED = 600;
 
 	private static Image image;
@@ -18,11 +17,12 @@ public class ReverseGravityPortalSprite implements DisplayableSprite {
 	private double height;
 	private boolean dispose;
 
-	public ReverseGravityPortalSprite(double centerX, double centerY) {
+
+	public FlappyBirdPortalSprite(double centerX, double centerY, double width, double height) {
 		this.centerX = centerX;
 		this.centerY = centerY;
-		this.width = DEFAULT_WIDTH;
-		this.height = DEFAULT_HEIGHT;
+		this.width = width;
+		this.height = height;
 		loadImage();
 	}
 

@@ -7,6 +7,10 @@ public class ObSprite implements DisplayableSprite {
 
     private static final String IMAGE_PATH = "res/simple-sprite.png";
     private static final String REVERSE_IMAGE_PATH = "res/lambo.jpg";
+    private static final String FLAPPY_IMAGE_PATH = "res/Tralala.jpg";
+    private static final String REVERSE_FLAPPY_IMAGE_PATH = "res/ferrari.jpg";
+
+
     private static final double DEFAULT_WIDTH = 85.0;
     private static final double DEFAULT_HEIGHT = 85.0;
     private static final double GROUND_Y = 360.0 - 35.0;
@@ -15,11 +19,15 @@ public class ObSprite implements DisplayableSprite {
     private static final double MIN_VELOCITY_THRESHOLD = 10.0;
     private static final double DEFAULT_JET_POWER = -1000;
     private static final double DEFAULT_GRAVITY = 450;
-
+    private boolean flappyMode = false;
+    private double flapVelocity = -300; 
+    
     double JET_BATTERY = 67676767676767676767676767676767.0;
 
     private static Image normalImage;
     private static Image reverseImage;
+    private static Image flappyImage;
+    private static Image reverseFlappyImage;
 
     private Image currentImage;
     private double gravity;
@@ -31,6 +39,7 @@ public class ObSprite implements DisplayableSprite {
     private double velocityY;
     private double jetPower;
     private boolean reversed = false; //switch image based on gravity and portals etc. (reverse gravity flip character and thus flip jetpack too)
+    private boolean levelComplete = false;
 
     public ObSprite(double centerX, double centerY) {
         this.centerX = centerX;
@@ -44,6 +53,9 @@ public class ObSprite implements DisplayableSprite {
         try {
             if (normalImage == null) normalImage = ImageIO.read(new File(IMAGE_PATH));
             if (reverseImage == null) reverseImage = ImageIO.read(new File(REVERSE_IMAGE_PATH));
+            if (flappyImage == null) flappyImage = ImageIO.read(new File(FLAPPY_IMAGE_PATH));
+            if (reverseFlappyImage == null) reverseFlappyImage = ImageIO.read(new File(REVERSE_FLAPPY_IMAGE_PATH));
+
         } catch (IOException e) {
             System.err.println("Error loading image: " + e);
         }
@@ -53,6 +65,14 @@ public class ObSprite implements DisplayableSprite {
 
     public Image getImage() {
         return currentImage;
+    }
+    
+    public boolean getFlappyMode() {
+    	return flappyMode;
+    }
+    
+    public boolean getLevelComplete() {
+    	return levelComplete;
     }
 
     public boolean getVisible() {
@@ -112,28 +132,36 @@ public class ObSprite implements DisplayableSprite {
 
     public void update(Universe universe, long actualDeltaTime) {
         double deltaTime = actualDeltaTime * 0.001;
-
-        velocityY += gravity * deltaTime; // apply gravity
-        centerY += velocityY * deltaTime;
+       
 
         KeyboardInput keyboard = KeyboardInput.getKeyboard();
-        if (keyboard.keyDown(38) && JET_BATTERY > 0) { 
+        boolean jetActive = keyboard.keyDown(38) && JET_BATTERY > 0;
+
+        if (jetActive && !flappyMode) { 
             velocityY += jetPower * deltaTime;
             JET_BATTERY -= actualDeltaTime;
         }
-
+        if (flappyMode) {
+            if (keyboard.keyDownOnce(38)) { 
+                velocityY = flapVelocity;
+            }
+        }
+             
+        velocityY += gravity * deltaTime; // apply gravity
+        centerY += velocityY * deltaTime;
+        
         // Ground bouncing
         if (centerY + (height/2) >= GROUND_Y) {
             centerY = GROUND_Y - (height/2);
             velocityY = -velocityY * BOUNCE_DAMPENING;
-            if (Math.abs(velocityY) < MIN_VELOCITY_THRESHOLD) velocityY = 0;
+            if (Math.abs(velocityY) < MIN_VELOCITY_THRESHOLD && !keyboard.keyDown(38)) velocityY = 0;
         }
 
         // Roof bouncing
         if (centerY - (height/2) <= ROOF_Y) {
             centerY = ROOF_Y + (height/2);
             velocityY = -velocityY * BOUNCE_DAMPENING;
-            if (Math.abs(velocityY) < MIN_VELOCITY_THRESHOLD) velocityY = 0;
+            if (Math.abs(velocityY) < MIN_VELOCITY_THRESHOLD && !keyboard.keyDown(38)) velocityY = 0;
         }
 
         for (DisplayableSprite sprite : universe.getSprites()) {
@@ -142,19 +170,50 @@ public class ObSprite implements DisplayableSprite {
             }
 
             if (sprite instanceof ReverseGravityPortalSprite && checkCollision(sprite) && !reversed) {
-                reversed = true;        // flip the state
+                reversed = true;        
+                flapVelocity = 300;
                 gravity = -DEFAULT_GRAVITY;
                 jetPower = -DEFAULT_JET_POWER;
-                currentImage = reverseImage; // switch to reverse image
+                if (flappyMode) {
+                	currentImage = reverseFlappyImage;
+                }
+                else {
+                	currentImage = reverseImage;
+                }
             }
 
             if (sprite instanceof FloorSprite && checkCollision(sprite)) {
-                centerY = sprite.getMinY() - height / 2;
-                velocityY = -velocityY * BOUNCE_DAMPENING;
+                if (velocityY > 0) { // floor possibility
+                    centerY = sprite.getMinY() - height / 2;
+                    velocityY = -velocityY * BOUNCE_DAMPENING;
+                }
+                
+            	else if (velocityY < 0) { // roof possibility
+            		centerY = sprite.getMaxY() + height / 2;
+            		velocityY = -velocityY * BOUNCE_DAMPENING;
+            	}
+
+                if (Math.abs(velocityY) < MIN_VELOCITY_THRESHOLD && !keyboard.keyDown(38)) {
+                    velocityY = 0;
+                }
             }
             
             if (sprite instanceof StatusRemoverSprite && checkCollision(sprite)) {
             	removeStatusEffects();
+            }
+            
+            if (sprite instanceof LevelEndSprite && checkCollision(sprite)) {
+                levelComplete = true;
+            }
+            
+            if (sprite instanceof FlappyBirdPortalSprite && checkCollision(sprite) && !flappyMode) {
+                flappyMode = true;
+                if (reversed) {
+                	currentImage = reverseFlappyImage;
+                }
+                else {
+                	currentImage = flappyImage;
+                }
             }
         }
     }
@@ -170,5 +229,8 @@ public class ObSprite implements DisplayableSprite {
     	gravity = DEFAULT_GRAVITY;
     	currentImage = normalImage;
     	jetPower = DEFAULT_JET_POWER;
+    	reversed = false;
+    	flappyMode = false;
+    	flapVelocity = -300;
     }
 }
