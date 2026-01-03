@@ -8,10 +8,10 @@ public class WallSprite implements DisplayableSprite {
 	private static final String IMAGE_PATH = "res/67.jpeg";
 	private static final double DEFAULT_WIDTH = 720.0;
 	private static final double DEFAULT_HEIGHT = 1280.0;
-	private static final double OB_SPEED = 600;
-
+	
 	private static Image image;
-
+	
+	private double originalWallSpeed;
 	private double centerX;
 	private double centerY;
 	private double width;
@@ -19,6 +19,7 @@ public class WallSprite implements DisplayableSprite {
 	private boolean dispose;
 	private boolean wallStart = false;
 	private double wallSpeed;
+	private double obSpeed;
 
 	public WallSprite(double centerX, double centerY) {
 		this.centerX = centerX;
@@ -100,6 +101,10 @@ public class WallSprite implements DisplayableSprite {
 	public void update(Universe universe, long actualDeltaTime) {
 		double deltaTime = actualDeltaTime * 0.001;
 		
+		ShellUniverse u = (ShellUniverse) universe;
+	    obSpeed = u.getObSpeed();
+	    originalWallSpeed = u.getWallSpeed();
+	    
 		if (wallStart) {
 			centerX += wallSpeed * deltaTime;
 		}
@@ -116,19 +121,19 @@ public class WallSprite implements DisplayableSprite {
 	    KeyboardInput keyboard = KeyboardInput.getKeyboard();
 	    
 	    if (flappyModeActive) {
-	    	wallSpeed = OB_SPEED;
+	    	wallSpeed = obSpeed;
 	    }
 	    else {
-	    	wallSpeed = 500;
+	    	wallSpeed = originalWallSpeed;
 	    }
 
 	    if (keyboard.keyDown(39) || flappyModeActive) { // ob moves right objects move left
-    	   centerX -= OB_SPEED * deltaTime;
+    	   centerX -= obSpeed * deltaTime;
     	   wallStart = true;
         }
 	    
 	    if (keyboard.keyDown(37) && !flappyModeActive) { // and vice versa
-    	   centerX += OB_SPEED * deltaTime;
+    	   centerX += obSpeed * deltaTime;
     	   wallStart = true;
 	    }
 	}		

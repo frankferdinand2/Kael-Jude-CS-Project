@@ -9,10 +9,11 @@ public class ShellUniverse implements Universe {
     private ArrayList<DisplayableSprite> sprites = new ArrayList<>();
     private ArrayList<Background> backgrounds = new ArrayList<>();
     private ArrayList<DisplayableSprite> disposalList = new ArrayList<>();
-
+    
+    private double obSpeed;
+    private double wallSpeed;
     private String currentLevelPath;
     private boolean resetLevel = false;
-
     private String[] levels = {"res/level1.txt", "res/level2.txt"};
     private int currentLevelIndex = 0;
     private boolean nextLevel = false;
@@ -26,7 +27,15 @@ public class ShellUniverse implements Universe {
             throw new RuntimeException("Level failed to load");
         }
     }
+    
+    public double getObSpeed() {
+        return obSpeed;
+    }
 
+    public double getWallSpeed() {
+        return wallSpeed;
+    }
+    
     public double getScale() {
         return 1;
     }
@@ -136,13 +145,25 @@ public class ShellUniverse implements Universe {
                     System.out.println("Ob must not be defined in level file");
                     return false;
                 }
+                
+                if (tokens[0].equals("ObSpeed")) {
+                    obSpeed = Double.parseDouble(tokens[1]);
+                    continue;
+                }
 
+                if (tokens[0].equals("WallSpeed")) {
+                    wallSpeed = Double.parseDouble(tokens[1]);
+                    continue;
+                }
+                
                 DisplayableSprite sprite = parseSprite(tokens, lineNumber);
+                
                 if (sprite == null) return false;
 
                 if (sprite instanceof LevelEndSprite) {
                     hasLevelEnd = true;
                 }
+                
 
                 loadedSprites.add(sprite);
             }
