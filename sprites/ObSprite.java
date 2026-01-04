@@ -168,7 +168,7 @@ public class ObSprite implements DisplayableSprite {
         }
 
         for (DisplayableSprite sprite : universe.getSprites()) {
-            if (checkCollision(sprite) && (sprite instanceof SpikeSprite || sprite instanceof WallSprite)) {
+            if (CollisionDetection.pixelBasedOverlaps(this, sprite) && (sprite instanceof SpikeSprite || sprite instanceof WallSprite)) {
                 dispose = true;
             }
 
