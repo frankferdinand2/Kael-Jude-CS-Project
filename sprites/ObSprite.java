@@ -31,7 +31,7 @@ public class ObSprite implements DisplayableSprite {
     private double gravity;
     private double centerX;
     private double centerY;
-    private double width;
+    private double width;	
     private double height;
     private boolean dispose;
     private double velocityY;
@@ -72,6 +72,10 @@ public class ObSprite implements DisplayableSprite {
     
     public boolean getFlappyMode() {
     	return flappyMode;
+    }
+    
+    public boolean getReversed() {
+    	return reversed;
     }
     
     public boolean getLevelComplete() {
@@ -239,5 +243,11 @@ public class ObSprite implements DisplayableSprite {
     	reversed = false;
     	flappyMode = false;
     	flapVelocity = -300;
+    	for (DisplayableSprite sprite : universe.getSprites()) {
+			if (sprite instanceof JetpackSprite) {
+				((JetpackSprite) sprite).removeStatusEffects();
+
+			}
+		}
     }
 }

@@ -12,6 +12,8 @@ public class ShellUniverse implements Universe {
     
     private double obSpeed;
     private double wallSpeed;
+    private double obCenterX;
+    private double obCenterY;
     private String currentLevelPath;
     private boolean resetLevel = false;
     private String[] levels = {"res/LevelData/level1.txt", "res/LevelData/level2.txt"};
@@ -180,7 +182,9 @@ public class ShellUniverse implements Universe {
 
         sprites.clear();
         sprites.addAll(loadedSprites);
+        sprites.add(new JetpackSprite(-400, 0));
         sprites.add(new ObSprite(-400, 0));
+        
         return true;
     }
 
