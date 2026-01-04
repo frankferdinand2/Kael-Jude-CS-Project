@@ -216,7 +216,7 @@ public class ObSprite implements DisplayableSprite {
                 	currentImage = flappyImage;
                 }
             }
-            if ((sprite instanceof FloorSprite || sprite instanceof WallSprite) && checkCollision(sprite)) {
+            if ((sprite instanceof FloorSprite || sprite instanceof SpikeSprite) && checkCollision(sprite)) {
             	if(CollisionDetection.pixelBasedOverlaps(this, sprite)) {
                     dispose = true;
                 }
