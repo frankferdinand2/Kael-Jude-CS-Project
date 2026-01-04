@@ -1,3 +1,10 @@
+Floor 500 0
+Spike 600 -250 1000 100
+ReverseGravityPortal 800 100
+ReverseGravityPortal 2000 100
+StatusRemover 1100 100
+LevelEnding 2500 0 100 100
+Wall -1000 0
 ObSpeed 1000
 WallSpeed 975
 
@@ -37,8 +44,8 @@ Spike 15000 225 1000 140
 
 Spike 18000 275 1000 640
 Spike 18000 -375 1000 140
-Spike 19000 200 1000 640
-Spike 19000 -300 1000 140
+Spike 19000 225 1000 640
+Spike 19000 -325 1000 140
 
 
 LevelEnding 20000 0 500 500
