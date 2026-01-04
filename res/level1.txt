@@ -1,3 +1,6 @@
+ObSpeed 600
+WallSpeed 550
+
 Spike 800 -375 1000 540
 Spike 800 275 1000 140
 Floor 800 275 500 150

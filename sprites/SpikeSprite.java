@@ -8,8 +8,6 @@ import javax.imageio.ImageIO;
 public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess w/
   
 	private static final String IMAGE_PATH = "res/red.jpg";
-	private static final double OB_SPEED = 600;
-
 	private static Image image;
 
 	private double centerX;
@@ -17,8 +15,9 @@ public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess 
 	private double width;
 	private double height;
 	private boolean dispose;
-
-
+	private double obSpeed;
+	
+	
 	public SpikeSprite(double centerX, double centerY, double width, double height) {
 		this.centerX = centerX;
 		this.centerY = centerY;
@@ -95,11 +94,14 @@ public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess 
 		this.dispose = dispose;
 	}
 	
+	
 	public void update(Universe universe, long actualDeltaTime) {
 		double deltaTime = actualDeltaTime * 0.001;
 		
-	    boolean flappyModeActive = false;
+		ShellUniverse u = (ShellUniverse) universe;
+	    obSpeed = u.getObSpeed();
 	    
+	    boolean flappyModeActive = false;
 	    for (DisplayableSprite sprite : universe.getSprites()) {
 	        if (sprite instanceof ObSprite) {
 	            flappyModeActive = ((ObSprite) sprite).getFlappyMode();
@@ -111,11 +113,11 @@ public class SpikeSprite implements DisplayableSprite { // logic 4 kael to mess 
 
 
        if (keyboard.keyDown(39) || flappyModeActive) { // ob moves right objects move left
-    	   centerX -= OB_SPEED * deltaTime;
+    	   centerX -= obSpeed * deltaTime;
        }
        
        if (keyboard.keyDown(37) && !flappyModeActive) { // and vice versa
-    	   centerX += OB_SPEED * deltaTime;
+    	   centerX += obSpeed * deltaTime;
        }
 	}		
 }
