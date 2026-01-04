@@ -168,9 +168,6 @@ public class ObSprite implements DisplayableSprite {
         }
 
         for (DisplayableSprite sprite : universe.getSprites()) {
-            if (CollisionDetection.pixelBasedOverlaps(this, sprite) && (sprite instanceof SpikeSprite || sprite instanceof WallSprite)) {
-                dispose = true;
-            }
 
             if (sprite instanceof ReverseGravityPortalSprite && checkCollision(sprite) && !reversed) {
                 reversed = true;        
@@ -218,6 +215,12 @@ public class ObSprite implements DisplayableSprite {
                 else {
                 	currentImage = flappyImage;
                 }
+            }
+            if ((sprite instanceof FloorSprite || sprite instanceof WallSprite) && checkCollision(sprite)) {
+            	if(CollisionDetection.pixelBasedOverlaps(this, sprite)) {
+                    dispose = true;
+                }
+
             }
         }
     }
