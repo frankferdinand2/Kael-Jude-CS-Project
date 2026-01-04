@@ -5,7 +5,7 @@ import javax.imageio.ImageIO;
 
 public class ObSprite implements DisplayableSprite {
 
-    private static final String IMAGE_PATH = "res/simple-sprite.png";
+    private static final String IMAGE_PATH = "res/SpriteImages/ObSprite.png";
     private static final String REVERSE_IMAGE_PATH = "res/lambo.jpg";
     private static final String FLAPPY_IMAGE_PATH = "res/Tralala.jpg";
     private static final String REVERSE_FLAPPY_IMAGE_PATH = "res/ferrari.jpg";
