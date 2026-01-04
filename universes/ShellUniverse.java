@@ -14,14 +14,14 @@ public class ShellUniverse implements Universe {
     private double wallSpeed;
     private String currentLevelPath;
     private boolean resetLevel = false;
-    private String[] levels = {"res/level1.txt", "res/level2.txt"};
+    private String[] levels = {"res/LevelData/level1.txt", "res/LevelData/level2.txt"};
     private int currentLevelIndex = 0;
     private boolean nextLevel = false;
 
     public ShellUniverse () {
         this.setXCenter(0);
         this.setYCenter(0);
-        currentLevelPath = "res/level1.txt";
+        currentLevelPath = levels[0];
 
         if (!loadLevel(currentLevelPath)) {
             throw new RuntimeException("Level failed to load");
