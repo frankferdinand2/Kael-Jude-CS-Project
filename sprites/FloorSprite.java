@@ -117,6 +117,7 @@ public class FloorSprite implements DisplayableSprite { // logic 4 kael to mess 
        if (keyboard.keyDown(37) && !flappyModeActive) { // and vice versa
     	   centerX += obSpeed * deltaTime;
        }
-	}		
+	}
+	
 	
 }

@@ -28,6 +28,5 @@ public interface DisplayableSprite {
 
 	public void update(Universe universe, long actual_delta_time);
 
-	public abstract boolean getReversed();	
 	
 }
